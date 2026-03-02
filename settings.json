@@ -1,0 +1,322 @@
+{
+  "name": "Neat",
+  "version": "1.9.9",
+  "images": [
+    {
+      "variable": "logo",
+      "label": "Logo",
+      "description": "Good for a logo up to 208 x 66 pixels"
+    }
+  ],
+  "image_sets": [
+    {
+      "variable": "slideshow_images",
+      "label": "Slideshow",
+      "description": "Adds a full screen slideshow to the homepage"
+    }
+  ],
+  "fonts": [
+    {
+      "variable": "header_font",
+      "label": "Header Font",
+      "default": "Dosis"
+    },
+    {
+      "variable": "text_font",
+      "label": "Text Font",
+      "default": "Open Sans"
+    }
+  ],
+  "colors": [
+    {
+      "variable": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "variable": "header_color",
+      "label": "Header Background",
+      "default": "#ffffff"
+    },
+    {
+      "variable": "header_link_color",
+      "label": "Header Links",
+      "default": "#656565"
+    },
+    {
+      "variable": "header_link_hover",
+      "label": "Header Link Hover",
+      "default": "#1b1b1b"
+    },
+    {
+      "variable": "welcome_text_color",
+      "label": "Welcome text",
+      "default": "#ffffff"
+    },
+    {
+      "variable": "text_color",
+      "label": "Text",
+      "default": "#111111"
+    },
+    {
+      "variable": "link_color",
+      "label": "Links",
+      "default": "#444444"
+    },
+    {
+      "variable": "link_hover",
+      "label": "Link Hover",
+      "default": "#1b1b1b"
+    },
+    {
+      "variable": "border_color",
+      "label": "Borders",
+      "default": "#e2e2e2"
+    },
+    {
+      "variable": "button_text_color",
+      "label": "Button & error text",
+      "default": "#FFFFFF"
+    },
+    {
+      "variable": "button_background_color",
+      "label": "Button background",
+      "default": "#000000"
+    },
+    {
+      "variable": "button_background_hover_color",
+      "label": "Button background hover",
+      "default": "#444444"
+    },
+    {
+      "variable": "error_color",
+      "label": "Error background",
+      "default": "#a92d22"
+    },
+    {
+      "variable": "announcement_text_color",
+      "label": "Announcement Message Text",
+      "default": "#FFFFFF"
+    },
+    {
+      "variable": "announcement_background_color",
+      "label": "Announcement Message Background",
+      "default": "#000000"
+    }
+  ],
+  "checkout": {
+    "header_image": "{{ logo }}",
+    "header_image_max_width": "208px",
+    "header_image_max_height": "66px",
+    "title_font": "{{ header_font }}",
+    "title_font_size": "22px",
+    "title_color": "{{ header_link_color }}",
+    "title_background_color": "transparent",
+    "background_color": "{{ header_color }}",
+    "body_font": "{{ text_font }}",
+    "body_font_size": "16px",
+    "step_border_color":"{{ border_color }}",
+    "step_header_color":"{{ text_color }}",
+    "step_inactive_header_color":" {{ text_color }}",
+    "step_header_font":"{{ header_font }}",
+    "step_background_color":"{{ background_color }}",
+    "content_background_color":"{{ background_color }}",
+    "content_banded": "true",
+    "content_header_background_color":"{{ background_color }}",
+    "content_header_color":"{{ text_color }}",
+    "content_color":"{{ text_color }}",
+    "content_header_font_size":"18px",
+    "content_border_color":"transparent",
+    "content_border_radius":"0px",
+    "error_background_color": "#a92d22",
+    "error_color": "#ffffff",
+    "error_border_radius": "0",
+    "error_border_color": "#a92d22",
+    "input_focus_color": "#000000",
+    "input_focus_background_color": "#ffffff",
+    "input_focus_border_color": "#000000",
+    "input_error_border_color": "#a92d22",
+    "input_color": "#000000",
+    "input_error_color": "#000000",
+    "input_border_color": "#bfbfbf",
+    "input_background_color": "#ffffff",
+    "input_error_background_color": "#ffffff",
+    "input_border_radius":"0px",
+    "input_font":"{{ text_font }}",
+    "button_color":"{{ button_text_color }}",
+    "button_border_width":"1px",
+    "button_border_radius":"0px",
+    "button_hover_color":"{{ button_text_color }}",
+    "button_background_color":"{{ button_background_color }}",
+    "button_hover_background_color":"{{ button_background_hover_color }}",
+    "button_border_color":"{{ button_background_color }}",
+    "button_hover_border_color":"{{ button_background_hover_color }}",
+    "link_color":"{{ link_color }}",
+    "link_hover_color":"{{ link_hover }}",
+    "step_header_font_size":"18px",
+    "summary_color":"{{ text_color }}",
+    "summary_secondary_color":"{{ link_color }}",
+    "summary_submit_background_color":"{{ background_color }}",
+    "summary_item_border_color":"{{ border_color }}",
+    "summary_item_list_border_color": "{{ border_color }}"
+  },
+  "options": [
+    {
+      "variable": "announcement_message_text",
+      "label": "Announcement text",
+      "type": "text",
+      "description": "Displays an announcement message on the top of every page"
+    },
+    {
+      "variable": "welcome_header",
+      "label": "Welcome header",
+      "type": "text",
+      "description": "Welcome header for homepage"
+    },
+    {
+      "variable": "welcome_subheader",
+      "label": "Welcome subheader",
+      "type": "text",
+      "description": "Welcome subheader for homepage"
+    },
+    {
+      "variable": "featured_subheader",
+      "label": "Featured subheader",
+      "type": "text",
+      "description": "Featured products subheader on homepage"
+    },
+    {
+      "variable": "nav_items",
+      "label": "Navigation items",
+      "type": "select",
+      "options": "0..6",
+      "default": 2,
+      "description": "The number of custom page links show in the main navigation."
+    },
+    {
+      "variable": "grid_image_style",
+      "label": "Product grid image style",
+      "type": "select",
+      "options": [
+        ["Normal", "default"],
+        ["Fit to square", "contain"],
+        ["Crop to square", "cover"]
+      ],
+      "default": "default",
+      "description": "Sets the display of images in the product grid"
+    },
+    {
+      "variable": "products_per_page",
+      "label": "Products per page",
+      "type": "select",
+      "options": "1..100",
+      "default": 36,
+      "description": "The number of products shown at a time on the Products page"
+    },
+    {
+      "variable": "featured_products",
+      "label": "Featured products",
+      "type": "select",
+      "options": "0..100",
+      "default": 12,
+      "description": "The number of products displayed on the home page"
+    },
+    {
+      "variable": "featured_order",
+      "label": "Featured products order",
+      "type": "select",
+      "options": "product_orders",
+      "default": "position",
+      "description": "The order of products on the Home page"
+    },
+    {
+      "variable": "secondary_product_images",
+      "label": "Secondary product images",
+      "type": "select",
+      "options": [
+        ["Full width", "full"],
+        ["Thumbnails", "thumbs"]
+      ],
+      "default": "thumbs",
+      "description": "Display secondary product images full-width or as thumbnails on the Product page"
+    },
+    {
+      "variable": "collections",
+      "label": "Enable collections",
+      "type": "boolean",
+      "default": false,
+      "description": "Use category collections instead of the traditional product listing page"
+    },
+    {
+      "variable": "show_search",
+      "label": "Show search",
+      "type": "boolean",
+      "default": false,
+      "description": "Shows the product search area"
+    },
+    {
+      "variable": "show_inventory_bars",
+      "label": "Show inventory bars",
+      "type": "boolean",
+      "default": false,
+      "description": "Shows a product's inventory amounts (when using inventory tracking)",
+      "requires": "inventory"
+    },
+    {
+      "variable": "show_sold_out_product_options",
+      "label": "Show sold out product options",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows sold out product options in the Product page dropdowns",
+      "requires": "inventory"
+    },
+    {
+      "variable": "share_buttons",
+      "label": "Show product share buttons",
+      "type": "boolean",
+      "default": false,
+      "description": "Adds Facebook, Twitter, and Pinterest buttons to Product pages"
+    },
+    {
+      "variable": "money_format",
+      "label": "Price display",
+      "type": "select",
+      "options": [
+        ["Currency sign", "sign"],
+        ["Currency code with sign", "sign_and_code"]
+      ],
+      "default": "sign",
+      "description": "Sets the display of prices in your shop"
+    },
+    {
+      "variable": "twitter_url",
+      "label": "Twitter URL",
+      "type": "text",
+      "description": "Ex: http://twitter.com/bigcartel"
+    },
+    {
+      "variable": "facebook_url",
+      "label": "Facebook URL",
+      "type": "text",
+      "description": "Ex: http://facebook.com/bigcartel"
+    },
+    {
+      "variable": "tumblr_url",
+      "label": "Tumblr URL",
+      "type": "text",
+      "description": "Ex: http://bigcartel.tumblr.com"
+    },
+    {
+      "variable": "instagram_url",
+      "label": "Instagram URL",
+      "type": "text",
+      "description": "Ex: http://instagram.com/bigcartel"
+    },
+    {
+      "variable": "pinterest_url",
+      "label": "Pinterest URL",
+      "type": "text",
+      "description": "Ex: http://pinterest.com/bigcartel"
+    }
+  ]
+}
