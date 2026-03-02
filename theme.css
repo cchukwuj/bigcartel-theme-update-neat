@@ -2,7 +2,30 @@
 https://flickity.metafizzy.co
 ---------------------------------------------- */
 
+/* 
 
+NOTE TO DEV:
+ 
+NEW as of 9/21/25: hardcoded some text colors in for the announcement-message-text layer, looks for a-announcement and delete it when no longer needed.
+  
+Look for "filter: hue-rotate" to find hue color changes to header logo and main 
+slideshow logo. Change text colors on the website to match hue changes.
+Only applies to affected area, others must be changed manually in theme color 
+selector. @property --hue in the controllor of this section, but ONLY when
+hue-var-cycle is disabled. When enabled, the @property is overriden, BUT
+it should still be the same after starting value to avoid bleeding
+
+Look for ".announcement-message-text:after { " for the dot dot dot 
+You can also search "dot dot dot"
+*/ 
+
+   
+@property --hue {  
+  syntax: '<angle>';
+  inherits: false;      
+  initial-value: 65deg;  
+}
+  
 .flickity-enabled {
   position: relative;
 }
@@ -541,6 +564,16 @@ header svg {
   transition: fill 0.25s ease-in-out;
 }
 
+  
+.announcement-message-text .a-announcement {
+  color: gray;
+  text-decoration: none;
+} 
+.announcement-message-text .a-announcement:hover, .a-announcement:focus {  
+  color: yellow;
+  text-decoration: underline; 
+}  
+ 
 a {
   color: {{ theme.link_color }};
   text-decoration: none;
@@ -548,6 +581,7 @@ a {
 a:hover, a:focus {
   color: {{ theme.link_hover }};
 }
+
 
 .button, submit, input[type='submit'], button {
   border-radius: 0;
@@ -762,12 +796,12 @@ h6 {
 }
 .announcement-message {
   background-color: {{ theme.announcement_background_color }};
-  color: {{ theme.announcement_text_color }};
+  color: {{ theme.announcement_text_color }}; 
   display: none;
   padding: 20px 144px;
   position: relative;
   text-align: center;
-  width: 100%;
+  width: 100%;  
   z-index: 1;
 }
 @media screen and (max-width: 1024px) {
@@ -777,7 +811,37 @@ h6 {
 }
 .announcement-message.visible {
   display: block;
+} 
+ 
+/* start dot dot dot  */ 
+
+.announcement-message-text:after { 
+  overflow: hidden;
+  display: inline-block; 
+  vertical-align: bottom;
+  -webkit-animation: ellipsis steps(3,end) 900ms infinite;         
+  animation: ellipsis steps(3,end) 900ms infinite;    
+  content: "\2026"; 
+  width: 0px;
 }
+
+@keyframes ellipsis {
+  to {
+    width: 1.25em;     
+  }
+}
+
+@-webkit-keyframes ellipsis {
+  to {
+    width:  1.25em;        
+  }
+}  
+
+/* snooze dot dot dot  */
+
+/* https://codepen.io/thetallweeks/pen/yybGra
+ */ 
+
 
 .button.announcement-message-close {
   -webkit-transform: translateY(-50%);
@@ -928,11 +992,31 @@ header .logo a {
 header .logo a:after {
   content: none !important;
 }
-header .logo.image img {
-  display: block;
-  max-height: 100%;
-  max-width: 100%;
+
+/* Turn this off if no longer want colors changing */ 
+@keyframes hue-var-cycle {
+  0% {
+    --hue: 65deg; 
+  }
+  50% {
+    --hue: 245deg; 
+  }
+  100% {
+    --hue: 65deg; 
+  }  
 }
+
+ 
+header .logo.image img {
+  display: block; 
+  max-height: 100%;
+  max-width: 100%;  
+  filter: saturation(50%); 
+  animation: hue-var-cycle 0.3s 2 linear;
+  animation-fill-mode: forwards;
+  filter: hue-rotate(var(--hue));
+}   
+ 
 header .logo.image a {
   height: 66px;
   max-width: 208px;
@@ -1108,8 +1192,8 @@ _:-ms-fullscreen, :root .carousel {
 }
 
 .flickity-viewport:after {
-  background-color: rgba(0, 0, 0, 0.3);
-  background-image: url("{{ 'overlay_pattern.png' | theme_image_url }}");
+  background-color: none;
+  background-image: url("{{ theme_image_url }}");
   background-repeat: repeat;
   background-size: 4px;
   content: "";
@@ -1137,12 +1221,14 @@ _:-ms-fullscreen, :root .carousel {
 .welcome-subheader {
   font-family: {{ theme.header_font | font_family }};
   font-weight: 600;
+  color: {{ theme.background_color }};
   letter-spacing: 0.2em;
   line-height: 1.25em;
   margin-right: -0.2em;
   padding: 0 16px 24px 16px;
   text-transform: uppercase;
-}
+} 
+
 .welcome-subheader {
   font-size: 16px;
 }
@@ -1537,13 +1623,13 @@ footer .footernav ul li a:hover, footer .footernav ul li a:focus {
 }
 .categories li a {
   display: inline-block;
-  padding: 6px 8px;
+  padding: 4px 12px 0px 8px;
 }
 .categories li a:hover {
   text-decoration: underline;
 }
 .categories li:after {
-  content: "/";
+/*   content: "/"; */
   display: inline-block;
   padding: 0 2px;
 }
@@ -1643,9 +1729,54 @@ _:-ms-fullscreen, :root .product-list-thumb {
   color: {{ theme.link_hover }};
 }
 
+
+
+ 
+@media (hover: hover) {
+  .product-list-link--show-secondary .product-list-image { /* HERE! */
+    transition: opacity 0.15s linear, visibility 0.15s linear;
+  }
+  .product-list-link--show-secondary:hover .product-list-image--primary {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .product-list-link--show-secondary:hover .product-list-image--secondary {
+    opacity: 1;
+    visibility: visible;
+    border: thick solid {{ theme.welcome_text_color }}       
+  }
+}
+
+
+@media (hover: none) {
+  .product-list-link--show-secondary .product-list-image { /* HERE! */
+    transition: opacity 0.15s linear, visibility 0.15s linear;
+  }
+  .product-list-link--show-secondary:active .product-list-image--primary {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .product-list-link--show-secondary:active .product-list-image--secondary {
+    opacity: 1;
+    visibility: visible;
+    border: thick solid {{ theme.welcome_text_color }}       
+  } 
+} 
+
+
+.product-list-link .product-list-image--secondary {
+  opacity: 0;
+  visibility: hidden;
+}
+
+
+
+ 
+
 .product-list-image-container {
   overflow: hidden;
   position: relative;
+  padding-bottom: 125%; 
 }
 .product-list-image-container.product-list-image-container-default:before {
   display: none;
@@ -1667,7 +1798,7 @@ _:-ms-fullscreen, :root .product-list-thumb {
   height: 100%;
 }
 .product-list-image.grid-default {
-  position: relative;
+  position: absolute;   
 }
 .product-list-image.grid-cover {
   object-fit: cover;
@@ -2036,7 +2167,7 @@ ul.product-availability li b b {
 .product-thumbnails {
   font-size: 0;
   list-style: none;
-  margin: 20px -20px;
+  margin: 10px -20px;
   text-align: center;
   padding: 0;
 }
@@ -2045,16 +2176,18 @@ ul.product-availability li b b {
   display: table;
   clear: both;
 }
+ 
 @media only screen and (max-width: 800px) {
   .product-thumbnails {
     margin: 5px -10px;
   }
 }
 .product-thumbnails li {
-  display: inline-block;
-  padding: 0 10px;
+  display: block; 
+  padding: 0 10px;    
   vertical-align: top;
-  width: 25%;
+  width: 100%;
+  margin: 2%; 
 }
 @media only screen and (max-width: 800px) {
   .product-thumbnails li {
@@ -2066,7 +2199,13 @@ ul.product-availability li b b {
 }
 .product-thumbnails li img {
   display: block;
-  width: 100%;
+  width: 100%; 
+  height: 20px; 
+  object-fit: none; 
+}
+
+.product-thumbnails li:hover {
+  opacity: 60%;  
 }
 
 .product-section-subheader {
@@ -2808,4 +2947,129 @@ button.close-overlay .close-icon {
 /*============================================================
   Custom Styles - add and override styles below.
 ============================================================*/
+
+.category-images {
+    max-width: 100%;
+    height: auto; 
+}
+
+.category-images:hover {
+  opacity: 0.5; 
+}
+
+.product-header {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0;
+  max-width: 100%;
+  height: auto; 
+}
+
+.product-header-image {
+    max-width: 25%;
+    height: auto; 
+}
+
+.product-header-desc {
+  text-align: center;
+} 
+
+hr {
+  border: 0;
+  clear:both;
+  display:block;
+  width: 100%;               
+  background-color:#777777;
+  height: 1px;
+  margin: 0;
+}
+
+.products-h1 { 
+  font-size:300%;
+  padding: 90px 0px;
+}
+
+
+.product-header-2 {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0;
+  max-height: 80%;
+  max-width: 100%; 
+}
+
+
+.product-header-2-sub {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0; 
+  max-height: 20%; 
+  max-width: 100%;  
+}
+
+.product-header-h1 { 
+  font-size:300%;
+}
+
+.product-header-div {
+  height:30vh; 
+}
+
+.product-header-all-products-center {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.product-header-all-products {
+  display: table;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+} 
+
+.welcome-header-image { 
+  max-width: 90%;     
+  opacity: 1.00;      
+  filter: saturation(90%);       
+    animation: hue-var-cycle 0.3s 2 linear;   
+  animation-fill-mode: forwards;
+  filter: hue-rotate(var(--hue));
+}   
 

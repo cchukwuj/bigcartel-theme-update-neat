@@ -1,21 +1,42 @@
-
-<h1 {% if page.full_url contains "search=" or theme.collections and page.full_url contains '/products' %}class="bottom-margin"{% endif %}>
-  {% if page.full_url contains "search=" %}
-    Product Search
-  {% elsif theme.collections and page.full_url contains '/products' %}
-    Collections
+<div class = "product-header-div">
+  {% if page.full_url contains '/category' %}
+    {% if page.full_url contains 'irre' %}
+      <img class = "product-header-2" src = "https://i.imgur.com/QzstHRs.png" />
+      <h6 class = "product-header-2-sub"> when nothing does </h6>  
+    {% elsif page.full_url contains 'lgndry' %}
+      <img class = "product-header-2" src = "https://i.imgur.com/xmB9yrz.png" />
+      <h6 class = "product-header-2-sub"> When Everything Matters </h6> 
+    {% endif %}
   {% else %}
-    {{ page.name }}
+    <div class = "product-header-all-products">
+      <div class= "product-header-all-products-center">
+        <h1 class = "product-header-h1">
+          ALL PRODUCTS
+        </h1> 
+      </div>
+    </div>
   {% endif %}
-</h1>
+</div>
+
 {% if page.full_url contains "search=" or theme.collections != true or page.full_url contains '/category' %}
   {% unless page.full_url contains "search=" %}
     <div class="subheader">
-      <ul class="categories">
-      {% for category in categories.active %}
-        <li class="page{% if page.full_url contains category.url %} selected{% endif %}">{{ category | link_to }}</li>
-      {% endfor %}
-      </ul>
+      <hr>
+        <ul class="categories"> 
+        {% for category in categories.active %}
+          <li>
+            <a href = "{{ category.url }}" title = "View {{ category.name }}"> 
+                {% if category.name contains 'LGNDRY' %}
+                  <img class = "category-images" src="https://i.imgur.com/toU8D6M.png" /> 
+                {% endif %}
+                {% if category.name contains 'Irre' %}
+                  <img class = "category-images" src="https://i.imgur.com/7iiIVuy.png" /> 
+                {% endif %}
+            </a>
+          </li>
+        {% endfor %}
+        </ul>
+      <hr>
     </div>
   {% endunless %}
   {% paginate products from products.current by theme.products_per_page %}
@@ -29,7 +50,15 @@
             {% assign product_status = '' %}
             {% case product.status %}
               {% when 'active' %}
-                {% if product.on_sale %}{% assign product_status = 'On sale' %}{% endif %}
+                {% if product.on_sale %}
+                  {% assign product_status = 'On sale' %}
+                {% endif %}
+                {% if product.description contains 'Pre-sale' %}
+                  {% assign product_status = 'Pre-Sale' %}   
+                {% endif %}
+                {% if product.description contains 'Limited' or product.description contains 'limited' %}
+                  {% assign product_status = 'Limited' %}   
+                {% endif %}
               {% when 'sold-out' %}
                 {% assign product_status = 'Sold out' %}
               {% when 'coming-soon' %}
@@ -45,11 +74,13 @@
               {% endif %}
             {% endcapture %}
             <div class="product-list-thumb {{ product.css_class }}">
-              <a class="product-list-link" href="{{ product.url }}" title="View {{ product.name | escape }}">
+              <a 
+                class="product-list-link{% if product.images[1] != blank %} product-list-link--show-secondary{% endif %}" 
+                href="{{ product.url }}" title="View {{ product.name | escape }}">
                 <div class="product-list-image-container product-list-image-container-{{ theme.grid_image_style }}">
                   <img
                     alt=""
-                    class="blur-up product-list-image lazyload grid-{{ theme.grid_image_style }}"
+                    class="blur-up product-list-image product-list-image--primary  lazyload grid-{{ theme.grid_image_style }}"
                     src="{{ product.image | product_image_url | constrain: 20 }}"
                     {% unless theme.grid_image_style == 'default' %}data-aspectratio="{{ aspect_ratio }}"{% endunless %}
                     data-srcset="
@@ -63,6 +94,26 @@
                     "
                     data-sizes="auto"
                   >
+                  {% if product.images[1] != blank %}
+                  {% assign image_width = product.image.width | times: 1.0 %}
+                  {% assign image_height = product.image.height | times: 1.0 %}
+                  {% assign aspect_ratio = image_width | divided_by: image_height %}
+                  <img
+                    alt=""
+                    class="blur-up product-list-image product-list-image--secondary lazyload grid-{{ theme.grid_image_style }}" 
+                    src="{{ product.images[1] | product_image_url | constrain: 20 }}"
+                    {% unless theme.grid_image_style == 'default' %}data-aspectratio="{{ aspect_ratio }}"{% endunless %}
+                    data-srcset="
+                      {{ product.images[1] | product_image_url | constrain: 240 }} 240w, 
+                      {{ product.images[1] | product_image_url | constrain: 400 }} 400w,
+                      {{ product.images[1] | product_image_url | constrain: 600 }} 600w,
+                      {{ product.images[1] | product_image_url | constrain: 800 }} 800w,
+                      {{ product.images[1] | product_image_url | constrain: 960 }} 960w,
+                      {{ product.images[1] | product_image_url | constrain: 1200 }} 1200w
+                    "
+                    data-sizes="auto"
+                  >
+                  {% endif %}
                 </div>
                 <div class="product-list-thumb-info">
                   <div class="product-list-thumb-name">{{ product.name }}</div>
@@ -124,7 +175,15 @@
                 {% assign product_status = '' %}
                 {% case product.status %}
                   {% when 'active' %}
-                    {% if product.on_sale %}{% assign product_status = 'On sale' %}{% endif %}
+                    {% if product.on_sale %}
+                      {% assign product_status = 'On sale' %}
+                    {% endif %}
+                    {% if product.description contains 'Pre-sale' %}
+                      {% assign product_status = 'Pre-Sale' %}   
+                    {% endif %}
+                    {% if product.description contains 'Limited' or product.description contains 'limited' %}
+                      {% assign product_status = 'Limited' %}   
+                    {% endif %}
                   {% when 'sold-out' %}
                     {% assign product_status = 'Sold out' %}
                   {% when 'coming-soon' %}
