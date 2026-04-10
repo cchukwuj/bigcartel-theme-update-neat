@@ -7,8 +7,128 @@
   var container = document.querySelector('.product-description');
   if (!container) return;
 
+  var DESCRIPTION_START = 'START DESCRIPTION';
+  var DESCRIPTION_END = 'END DESCRIPTION';
   var START_MARK = 'START SIZE GUIDE';
   var END_MARK = 'END SIZE GUIDE';
+
+  function initializeDescriptionVariants(nodes){
+    var foundDescription = nodes.some(function(node){
+      return textOf(node).toUpperCase().indexOf(DESCRIPTION_START) !== -1;
+    });
+    if (!foundDescription) return;
+
+    var variants = [];
+    var collecting = false;
+    var currentNodes = [];
+    var variantLabel = null;
+    var firstSectionNode = null;
+    var lastSectionNode = null;
+
+    function pushVariant(){
+      if (!variantLabel) variantLabel = 'Variant ' + (variants.length + 1);
+      variants.push({ label: variantLabel, nodes: currentNodes.slice() });
+      currentNodes = [];
+      variantLabel = null;
+    }
+
+    for (var i = 0; i < nodes.length; i++){
+      var node = nodes[i];
+      var txt = textOf(node) || '';
+      var txtUpper = txt.toUpperCase();
+      var startIdx = txtUpper.indexOf(DESCRIPTION_START);
+      var endIdx = txtUpper.indexOf(DESCRIPTION_END);
+
+      if (!collecting && startIdx !== -1) {
+        collecting = true;
+        if (!firstSectionNode) firstSectionNode = node;
+        variantLabel = txt.substring(startIdx + DESCRIPTION_START.length).trim() || ('Variant ' + (variants.length + 1));
+
+        if (endIdx !== -1 && endIdx > startIdx) {
+          var innerText = txt.substring(startIdx + DESCRIPTION_START.length, endIdx).trim();
+          if (innerText) {
+            var p = document.createElement('p');
+            p.textContent = innerText;
+            currentNodes.push(p);
+          }
+          pushVariant();
+          collecting = false;
+          lastSectionNode = node;
+        } else {
+          var afterText = txt.substring(startIdx + DESCRIPTION_START.length).trim();
+          if (afterText) {
+            var pAfter = document.createElement('p');
+            pAfter.textContent = afterText;
+            currentNodes.push(pAfter);
+          }
+        }
+        continue;
+      }
+
+      if (collecting && endIdx !== -1) {
+        var beforeText = txt.substring(0, endIdx).trim();
+        if (beforeText) {
+          var pBefore = document.createElement('p');
+          pBefore.textContent = beforeText;
+          currentNodes.push(pBefore);
+        }
+        pushVariant();
+        collecting = false;
+        lastSectionNode = node;
+        continue;
+      }
+
+      if (collecting) {
+        currentNodes.push(node.cloneNode(true));
+      }
+    }
+
+    if (!variants.length) return;
+    if (!lastSectionNode) lastSectionNode = firstSectionNode;
+
+    var switcher = document.createElement('div');
+    switcher.className = 'description-variant-switch';
+
+    var variantsWrapper = document.createElement('div');
+    variantsWrapper.className = 'description-variants';
+
+    variants.forEach(function(variant, index){
+      var button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'description-variant-button';
+      button.dataset.variantIndex = index;
+      button.textContent = variant.label;
+      button.addEventListener('click', function(){ showVariant(index); });
+      switcher.appendChild(button);
+
+      var variantDiv = document.createElement('div');
+      variantDiv.className = 'description-variant';
+      if (index !== 0) variantDiv.style.display = 'none';
+      variant.nodes.forEach(function(child){ variantDiv.appendChild(child); });
+      variantsWrapper.appendChild(variantDiv);
+    });
+
+    function showVariant(index){
+      var variantEls = variantsWrapper.querySelectorAll('.description-variant');
+      var buttons = switcher.querySelectorAll('.description-variant-button');
+      variantEls.forEach(function(el, i){ el.style.display = i === index ? '' : 'none'; });
+      buttons.forEach(function(btn, i){ btn.disabled = i === index; });
+    }
+
+    firstSectionNode.parentNode.insertBefore(switcher, firstSectionNode);
+    firstSectionNode.parentNode.insertBefore(variantsWrapper, firstSectionNode);
+
+    var removing = false;
+    nodes.forEach(function(node){
+      if (node === firstSectionNode) removing = true;
+      if (removing && node.parentNode) node.parentNode.removeChild(node);
+      if (node === lastSectionNode) removing = false;
+    });
+  }
+
+  var initialChildNodes = Array.prototype.slice.call(container.childNodes || []);
+  if (!initialChildNodes.length) return;
+  initializeDescriptionVariants(initialChildNodes);
 
   var childNodes = Array.prototype.slice.call(container.childNodes || []);
   if (!childNodes.length) return;
