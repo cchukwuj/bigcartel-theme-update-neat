@@ -11,7 +11,9 @@
  * - secondImageOffset: which image to show when toggle is ON (1 = second image)
  */
 
-console.log('🌟🌟🌟 SCRIPT LOADING STARTING 🌟🌟🌟');
+
+alert('TOGGLE SCRIPT LOADED AND RUNNING');
+console.log('🌟🌟🌟 CONSOLE LOG TEST 🌟🌟🌟');
 
 (function() {
   // ===== CONFIGURATION =====
