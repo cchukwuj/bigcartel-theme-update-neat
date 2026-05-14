@@ -1,16 +1,24 @@
 <!DOCTYPE html>
+<!--
+BTW, did some alterations to "('.carousel').flickity", look for it if you want to return it to its former glory. Just kidding, this version is wayy better. It alters all the images within a desired intro period before showing the images as expected. Pretty nice. 
+--> 
+ 
+
   <head>
     <title>{% if page.full_url contains "search=" %}Product Search{% elsif theme.collections and page.full_url contains '/products' %}Collections{% else %}{{ page.name }}{% endif %} | {{ store.name }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{{ theme | theme_css_url }}" media="screen" rel="stylesheet" type="text/css">
     {{ head_content }}
-  </head>
+  </head> 
   <body id="{{ page.permalink }}" class="{{ page.category }}">
     {% if theme.announcement_message_text != blank %}
-      <aside role="complementary" aria-label="Announcement message" class="announcement-message {% if page.permalink =='home' %}home{% if theme.welcome_header == blank and theme.welcome_subheader == blank and theme.image_sets.slideshow_images.size == 0 %} overlay {% else %} has_featured{% endif %}{% else %}page{% endif %}" id="announce-message">
-        <div class="announcement-wrapper">
-          <div class="announcement-message-text">{{ theme.announcement_message_text }}</div>
+      <aside role="complementary" aria-label="Announcement message" class="announcement-message" id="announce-message"> 
+        <div class="announcement-wrapper">  
+          <div class="announcement-message-text"> 
+                {{ theme.announcement_message_text }}  
+<!--          <span id="demo"></span>      -->
+        </div>
         </div>
         <button aria-label="Close announcement" class="button announcement-message-close" title="Close announcement message">
           <svg aria-hidden="true" class="close-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 8 8"><path d="M7.924 6.51l-2.474-2.475 2.475-2.475c.196-.195.196-.512 0-.707l-.708-.753c-.195-.195-.512-.195-.707 0l-2.474 2.521-2.475-2.475c-.195-.195-.512-.195-.707 0l-.707.754c-.196.195-.196.5 0 .707l2.475 2.475-2.475 2.428c-.196.195-.196.5 0 .707l.707.7c.195.2.5.2.7 0l2.475-2.475 2.481 2.482c.195.2.5.2.7 0l.707-.707c.204-.217.183-.517-.017-.707z"/></svg>
@@ -80,8 +88,16 @@
           {% endif %}
           {% if theme.welcome_header != blank or theme.welcome_subheader != blank %}
             <div class="featured">
-              {% if theme.welcome_subheader != blank %}<div class="welcome-subheader">{{ theme.welcome_subheader }}</div>{% endif %}
-              {% if theme.welcome_header != blank %}<div class="welcome-header">{{ theme.welcome_header }}</div>{% endif %}
+              {% if theme.welcome_subheader != blank %}
+                <div class="welcome-subheader"> 
+                  {{ theme.welcome_subheader }} 
+                </div>
+              {% endif %} 
+              {% if theme.welcome_header != blank %}
+                <div class="welcome-header">
+                  <img class = "welcome-header-image" src="https://i.imgur.com/d1Q2YcS.png" />   
+                </div>
+              {% endif %}
               <a href="/products" class="button shop-now-button">Shop Now</a>
             </div>
           {% endif %}
@@ -223,33 +239,94 @@
       Product.find('{{ product.permalink }}', processProduct)
     </script>
   {% endif %}
-  <script>
-    $(function() {
-  		if ($('.slideshow').length) {
-        $('.carousel').flickity({
-          accessibility: true,
-          adaptiveHeight: false,
-          autoPlay: 6000,
-          cellAlign: 'center',
-          cellSelector: undefined,
-          contain: false,
-          draggable: '>1',
-          dragThreshold: 3,
-          freeScroll: false,
-          groupCells: false,
-          initialIndex: 0,
-          lazyLoad: true,
-          percentPosition: true,
-          prevNextButtons: false,
-          pageDots: true,
-          resize: true,
-          rightToLeft: false,
-          setGallerySize: false,
-          watchCSS: false,
-          wrapAround: true
-        });
-  		}
+  <script> 
+$(function() {
+  if ($('.slideshow').length) {
+    // Initialize Flickity with your original options
+    var $carousel = $('.carousel').flickity({
+      accessibility: true,
+      adaptiveHeight: false,
+      autoPlay: false, // 🚨 changed from 6000 to false
+      cellAlign: 'center',
+      contain: false,
+      dragThreshold: 3,
+      draggable: '>1',
+      friction: 0.8,
+      lazyLoad: true,
+      prevNextButtons: false,
+      pageDots: true,
+      wrapAround: true
     });
+
+    var flkty = $carousel.data('flickity');
+    var cellsCount = flkty.cells.length;
+
+    // Total time for intro burst 
+    var totalIntroDuration = 500; // 2 seconds
+    // Time per slide 
+    var delay = totalIntroDuration / cellsCount;
+
+    function runIntro(i) {
+      flkty.select(i); // smooth animated transition
+      if (i < cellsCount ) {  
+        setTimeout(function() {
+          runIntro(i + 1);
+        }, delay);
+      } else {
+        // After last slide, restore normal autoplay
+        flkty.options.autoPlay = 6000; // back to 6s autoplay
+        $carousel.flickity('playPlayer');
+      }
+    }
+
+    // Kick off intro pass
+    if (cellsCount > 1) {
+      runIntro(0);
+    } else {
+      // If only one slide, just start autoplay normally
+      flkty.options.autoPlay = 6000;
+      $carousel.flickity('playPlayer');
+    }
+  }
+});
+  </script>
+  <script>
+  // Set the date we're counting down to       
+  var countDownDate = new Date("Nov 1, 2025 13:38:00").getTime();     
+  var aText = "🚨 Our 2025 Fall Drop is now LIVE until the end of October: "  
+  var endMessage = "Our <b>2025 Fall  Drop</b> has concluded."
+    
+  function pad(num) {
+      var s = "000" + num;
+      return s.substr(s.length-2); 
+  }
+  
+  // Update the count down every 1 second
+  var x = setInterval(function() {
+  
+    // Get today's date and time
+    var now = new Date().getTime();
+      
+    // Find the distance between now and the count down date
+    var distance = countDownDate - now;
+       
+    // If the count down is over, write some text 
+    if (distance < 0) {
+      clearInterval(x);
+      document.querySelector("#demo").innerHTML = endMessage; 
+    } 
+    else {
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          
+        // Output the result in an element with id="demo" 
+        document.querySelector("#demo").innerHTML = aText + " <span style='text-decoration: underline;'>" + pad(days) + "d " + pad(hours) + "h "
+        + pad(minutes) + "m " + pad(seconds) + "s " + "</span> "; 
+    }
+  }, 1000);
   </script>
 </body>
-</html>
+</html>  
