@@ -3128,4 +3128,52 @@ hr {
   .promo-modal-content h2 { font-size: 1.25rem; }
 }
 
- 
+/*============================================================
+  Scroll-Reveal Stagger — Product Grids
+  JS adds .sr-init on setup, .sr-visible when in viewport.
+  No JS = items stay visible (graceful degradation).
+============================================================*/
+.product-list-thumb.sr-init {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.product-list-thumb.sr-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/*============================================================
+  RGB Glitch Flicker — Product Grid Images (pointer devices only)
+  Applied only to items without a secondary-image swap,
+  to avoid conflicting with the existing crossfade.
+============================================================*/
+@keyframes glitch-img {
+  0%   { transform: translate(0, 0);       filter: none; }
+  10%  { transform: translate(-5px, 0);    filter: hue-rotate(90deg) saturate(3) brightness(1.15); }
+  22%  { transform: translate(5px, 0);     filter: hue-rotate(220deg) saturate(2.5); }
+  34%  { transform: translate(-3px, 1px);  filter: hue-rotate(330deg) saturate(3.5) brightness(0.9); }
+  46%  { transform: translate(3px, -1px);  filter: hue-rotate(50deg) saturate(2); }
+  58%  { transform: translate(0, 0);       filter: none; }
+  100% { transform: translate(0, 0);       filter: none; }
+}
+
+@media (hover: hover) {
+  /* Items without a secondary image: glitch the image directly */
+  .product-list-link:not(.product-list-link--show-secondary):hover .product-list-image {
+    animation: glitch-img 0.38s steps(1) forwards;
+  }
+  /* Items with a secondary image: glitch the primary as it "glitches away" into the secondary */
+  .product-list-link--show-secondary:hover .product-list-image--primary {
+    animation: glitch-img 0.3s steps(1) forwards;
+  }
+}
+@media (hover: none) {
+  /* Same glitch on press-and-hold for touch devices */
+  .product-list-link:not(.product-list-link--show-secondary):active .product-list-image {
+    animation: glitch-img 0.38s steps(1) forwards;
+  }
+  .product-list-link--show-secondary:active .product-list-image--primary {
+    animation: glitch-img 0.3s steps(1) forwards;
+  }
+}

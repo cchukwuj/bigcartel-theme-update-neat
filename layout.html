@@ -328,5 +328,73 @@ $(function() {
     }
   }, 1000);
   </script>
+
+  <!-- Film Grain Overlay -->
+  <canvas id="film-grain" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9998;opacity:0.028;image-rendering:pixelated;"></canvas>
+  <script>
+  (function () {
+    var canvas = document.getElementById('film-grain');
+    if (!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+    var imgData, data, frameCount = 0;
+
+    function resize() {
+      // Internal resolution is capped — CSS stretches it to fill viewport.
+      // Coarser grain, far cheaper to generate (~10x fewer pixels).
+      canvas.width  = Math.min(Math.round(window.innerWidth  / 3), 480);
+      canvas.height = Math.min(Math.round(window.innerHeight / 3), 320);
+      imgData = ctx.createImageData(canvas.width, canvas.height);
+      data = imgData.data;
+    }
+
+    function tick() {
+      requestAnimationFrame(tick);
+      // Update at ~30fps to halve CPU cost with no perceptible difference.
+      if (++frameCount % 2 !== 0) return;
+      var len = data.length;
+      for (var i = 0; i < len; i += 4) {
+        var v = (Math.random() * 255) | 0;
+        data[i]     = v;
+        data[i + 1] = v;
+        data[i + 2] = v;
+        data[i + 3] = 255;
+      }
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    window.addEventListener('resize', resize, { passive: true });
+    resize();
+    tick();
+  })();
+  </script>
+
+  <!-- Scroll-Reveal Stagger — Product Grids -->
+  <script>
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    var items = document.querySelectorAll('.product-list-thumb');
+    if (!items.length) return;
+
+    // Mark all items hidden before the first paint.
+    items.forEach(function (el) { el.classList.add('sr-init'); });
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        // Stagger delay: position within the row (capped at 4 slots × 80ms = 320ms max).
+        var siblings = Array.prototype.slice.call(
+          el.parentNode.querySelectorAll('.product-list-thumb')
+        );
+        var idx = siblings.indexOf(el);
+        el.style.transitionDelay = (idx % 4) * 80 + 'ms';
+        el.classList.add('sr-visible');
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.08 });
+
+    items.forEach(function (el) { observer.observe(el); });
+  })();
+  </script>
 </body>
 </html>  
